@@ -4,12 +4,13 @@ import math
 WIDTH = 800
 HEIGHT = 800
 
-ACCELERATION = 0.02
-
 # create a new spaceship, using the 'spaceship.png' image
 spaceship = Actor('spaceship')
-# place the spaceship in the centre of the screen
-spaceship.center=(WIDTH/2, HEIGHT/2)
+# place the spaceship in the centre of the screen, facing right
+spaceship.center = (WIDTH/2, HEIGHT/2)
+spaceship.angle = 0
+# set an acceleration for the spaceship
+spaceship.ACCELERATION = 0.02
 # initially the spaceship is stationary
 spaceship.x_speed = 0
 spaceship.y_speed = 0
@@ -31,8 +32,8 @@ def update():
     # and change displayed image
     if keyboard.up:
         spaceship.image = 'spaceship_thrust'
-        spaceship.x_speed = spaceship.x_speed + math.cos(math.radians(new_angle)) * ACCELERATION
-        spaceship.y_speed = spaceship.y_speed + math.sin(math.radians(new_angle)) * ACCELERATION
+        spaceship.x_speed += math.cos(math.radians(new_angle)) * spaceship.ACCELERATION
+        spaceship.y_speed += math.sin(math.radians(new_angle)) * spaceship.ACCELERATION
     else:
         spaceship.image = 'spaceship'
 
@@ -40,8 +41,8 @@ def update():
     spaceship.angle = new_angle
 
     # use the x and y speed to update the spaceship position
-    spaceship.x += spaceship.x_speed
     # subtract the y speed as coordinates go from top to bottom
+    spaceship.x += spaceship.x_speed
     spaceship.y -= spaceship.y_speed
 
 def draw():
