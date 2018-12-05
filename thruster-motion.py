@@ -4,47 +4,46 @@ import math
 WIDTH = 800
 HEIGHT = 800
 
+ACCELERATION = 0.02
+
+# create a new spaceship, using the 'spaceship.png' image
 spaceship = Actor('spaceship')
-spaceship.center=(400, 400)
+# place the spaceship in the centre of the screen
+spaceship.center=(WIDTH/2, HEIGHT/2)
+# initially the spaceship is stationary
 spaceship.x_speed = 0
 spaceship.y_speed = 0
 
 def update():
+    # save the spaceship's current angle,
+    # as changing the actor's image resets the angle to 0
+    new_angle = spaceship.angle
 
+    # rotate left on left arrow press
     if keyboard.left:
-        spaceship.angle += 2
+        new_angle += 2
 
+    # rotate right on right arrow press
     if keyboard.right:
-        spaceship.angle -= 2
+        new_angle -= 2
 
-    # NOTE: changing an actors image resets the sprite
-    # to fix this, store the angle as 'a' temporarily
-    # change the image and then reset the old value for the angle
-    a = spaceship.angle
+    # accelerate forwards on up arrow press
+    # and change displayed image
     if keyboard.up:
         spaceship.image = 'spaceship_thrust'
-        # NOTE: as Pygame angles are backwards
-        # (i.e. 0 - 360 anti-clockwise)
-        # you need to subtact the speed (not add)
-        spaceship.x_speed += math.sin(math.radians(a)) * 0.01 * -1
-        spaceship.y_speed += math.cos(math.radians(a)) * 0.01 * -1
+        spaceship.x_speed = spaceship.x_speed + math.cos(math.radians(new_angle)) * ACCELERATION
+        spaceship.y_speed = spaceship.y_speed + math.sin(math.radians(new_angle)) * ACCELERATION
     else:
         spaceship.image = 'spaceship'
-    spaceship.angle = a
 
+    # set the new angle
+    spaceship.angle = new_angle
+
+    # use the x and y speed to update the spaceship position
     spaceship.x += spaceship.x_speed
-    spaceship.y += spaceship.y_speed
+    # subtract the y speed as coordinates go from top to bottom
+    spaceship.y -= spaceship.y_speed
 
 def draw():
     screen.clear()
     spaceship.draw()
-
-    using = math.radians(spaceship.angle)
-    screen.draw.text('Angle (deg):',(10,10),color='white')
-    screen.draw.text(str(round(spaceship.angle,2)),(10,25),color='white')
-    screen.draw.text('Angle (rad):',(150,10),color='white')
-    screen.draw.text(str(round(using,2)),(150,25),color='white')
-    screen.draw.text('Sin/x:',(300,10),color='white')
-    screen.draw.text(str(round(math.sin(using),2)),(300,25),color='white')
-    screen.draw.text('Cos/y:',(450,10),color='white')
-    screen.draw.text(str(round(math.cos(using),2)),(450,25),color='white')
